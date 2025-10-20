@@ -10,36 +10,28 @@ dotenv.config();
 
 const app = express();
 
-// ==================== CORS CONFIGURATION ====================
-const allowedOrigins = [
-  'https://tunga-notes-frontend.vercel.app',
-  'http://localhost:3000',
-];
-
-app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true); // allow Postman / mobile apps
-    if (allowedOrigins.indexOf(origin) === -1) {
-      return callback(new Error('CORS policy violation'), false);
-    }
-    return callback(null, true);
-  },
+// ==================== CORS ====================
+const corsOptions = {
+  origin: ['https://tunga-notes-frontend.vercel.app', 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-}));
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Preflight
 
 app.use(express.json());
 
-// ==================== DATABASE CONNECTION ====================
+// ==================== DATABASE ====================
 mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log('✅ MongoDB Atlas Connected'))
+  .then(() => console.log('MongoDB Atlas Connected'))
   .catch((err) => {
-    console.error('❌ MongoDB Connection Error:', err);
+    console.error('MongoDB Connection Error:', err);
     process.exit(1);
   });
 
@@ -61,7 +53,7 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// ==================== ERROR HANDLING ====================
+// ==================== ERROR HANDLER ====================
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 
@@ -74,5 +66,4 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
