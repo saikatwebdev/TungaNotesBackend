@@ -11,12 +11,22 @@ dotenv.config();
 const app = express();
 
 // ==================== CORS CONFIGURATION ====================
+const allowedOrigins = [
+  'https://tunga-notes-frontend.vercel.app',
+  'http://localhost:3000',
+];
 
 app.use(cors({
-  origin: 'https://tunga-notes-frontend.vercel.app',
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true); // allow Postman / mobile apps
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error('CORS policy violation'), false);
+    }
+    return callback(null, true);
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  credentials: true
 }));
 
 app.use(express.json());
