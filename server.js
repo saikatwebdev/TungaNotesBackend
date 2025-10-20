@@ -3,8 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const path = require('path');
-
 const authRoutes = require('./routes/auth');
 const notesRoutes = require('./routes/notes');
 
@@ -14,10 +12,7 @@ const app = express();
 
 // ==================== CORS ====================
 const corsOptions = {
-  origin: [
-    'https://tunga-notes-frontend.vercel.app', // deployed frontend
-    'http://localhost:5173' // local Vite dev
-  ],
+  origin: ['https://tunga-notes-frontend.vercel.app', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -52,16 +47,6 @@ app.get('/', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
-
-// ==================== SPA CATCH-ALL ====================
-// Optional: only if you want Express to serve React build
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client', 'dist')));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
-  });
-}
 
 // ==================== 404 HANDLER ====================
 app.use((req, res) => {
