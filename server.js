@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -9,30 +10,22 @@ dotenv.config();
 
 const app = express();
 
-// CORS Configuration for Production
+// ==================== CORS CONFIGURATION ====================
 const allowedOrigins = [
   'https://tunga-notes-frontend.vercel.app',
   'http://localhost:3000', // for local testing
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (mobile apps, Postman, etc.)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) === -1) {
-      return callback(new Error('CORS policy violation'), false);
-    }
-    return callback(null, true);
-  },
-  credentials: true,
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
 
 app.use(express.json());
 
-// Database Connection with better error handling
+// ==================== DATABASE CONNECTION ====================
 mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
@@ -44,11 +37,11 @@ mongoose
     process.exit(1);
   });
 
-// Routes
+// ==================== ROUTES ====================
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', notesRoutes);
 
-// Health check route
+// ==================== HEALTH CHECK ====================
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Notes API is running',
@@ -57,12 +50,12 @@ app.get('/', (req, res) => {
   });
 });
 
-// 404 handler
+// ==================== 404 HANDLER ====================
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Error handling middleware
+// ==================== ERROR HANDLING ====================
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 
@@ -71,6 +64,7 @@ app.use((err, req, res, next) => {
   });
 });
 
+// ==================== START SERVER ====================
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
