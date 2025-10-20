@@ -10,9 +10,9 @@ dotenv.config();
 
 const app = express();
 
-// ==================== CORS ====================
+// CORS
 const corsOptions = {
-  origin: ['https://tunga-notes-frontend.vercel.app', 'http://localhost:3000'],
+  origin: ['https://tunganotes.vercel.app', 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -23,7 +23,7 @@ app.options('*', cors(corsOptions)); // Preflight
 
 app.use(express.json());
 
-// ==================== DATABASE ====================
+//DATABASE
 mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
@@ -35,11 +35,11 @@ mongoose
     process.exit(1);
   });
 
-// ==================== ROUTES ====================
+// ROUTES
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', notesRoutes);
 
-// ==================== HEALTH CHECK ====================
+//HEALTH CHECK 
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Notes API is running',
@@ -48,12 +48,12 @@ app.get('/', (req, res) => {
   });
 });
 
-// ==================== 404 HANDLER ====================
+// 404 HANDLER
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// ==================== ERROR HANDLER ====================
+// ERROR HANDLER 
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 
@@ -62,7 +62,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ==================== START SERVER ====================
+// START SERVER
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
