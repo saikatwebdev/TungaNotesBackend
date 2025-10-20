@@ -11,13 +11,9 @@ dotenv.config();
 const app = express();
 
 // ==================== CORS CONFIGURATION ====================
-const allowedOrigins = [
-  'https://tunga-notes-frontend.vercel.app',
-  'http://localhost:3000', // for local testing
-];
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: 'https://tunga-notes-frontend.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
