@@ -19,7 +19,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Preflight
+app.options('/*', cors(corsOptions)); // Preflight
 
 app.use(express.json());
 
