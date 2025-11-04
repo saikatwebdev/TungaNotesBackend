@@ -4,14 +4,11 @@ const User = require('../models/User');
 
 const router = express.Router();
 
-// @route   POST /api/auth/signup
-// @desc    Register a new user
-// @access  Public
 router.post('/signup', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Validation
+
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Please provide all fields' });
     }
@@ -44,9 +41,7 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// @route   POST /api/auth/login
-// @desc    Login user and return JWT token
-// @access  Public
+
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
